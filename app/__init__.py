@@ -8,7 +8,7 @@ jwt = JWTManager()
 def create_app():
     app = Flask(__name__)
     
-    # Load config from app/config.py (ensure class name is Config)
+    # Load config from app/config.py 
     app.config.from_object('app.config.Config')
 
     # Debug print to verify DB URI loaded
@@ -33,7 +33,6 @@ def create_app():
 
     from app.Routes.Project_Routes import project_bp
     app.register_blueprint(project_bp, url_prefix='/api/project')
-
 
     print("auth_bp loaded")
     return app

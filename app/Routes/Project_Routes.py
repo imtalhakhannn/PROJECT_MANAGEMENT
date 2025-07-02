@@ -50,7 +50,8 @@ def create_project(current_user):
 
 @project_bp.route('/assign', methods=['POST'])
 @jwt_required()
-@role_required(['Project Manager'])  # Only PM can assign users
+# Only PM can assign users
+@role_required(['Project Manager'])  
 def assign_user(current_user):
     data = request.get_json()
     project_id = data.get('project_id')

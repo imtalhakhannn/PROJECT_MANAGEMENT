@@ -6,5 +6,5 @@ class Config:
     # Disabling SQLAlchemy event system to save resources 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # Defining the secret key used for signing JWT tokens (replacing it in production for security)
+    # Defining the secret key used for signing JWT tokens 
     JWT_SECRET_KEY = 'your-secret-key'  
