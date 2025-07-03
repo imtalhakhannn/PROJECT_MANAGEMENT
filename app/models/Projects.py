@@ -1,44 +1,58 @@
-# This model defines a project, managed by a Project Manager
 from app import db
 
+# Project model that represents a project in the system
 class Project(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)  # Unique ID for each project
+    name = db.Column(db.String(120), nullable=False)  # Project name (cannot be null)
+    manager_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key to the manager (User)
+    assigned_users = db.relationship('ProjectUser', backref='project', lazy=True)  # Relationship to assigned users via ProjectUser table
+   
+    def to_dict(self):
+       
+       return {
+        "id": self.id,
+        "name": self.name,
+        "manager_id": self.manager_id
+    }
 
-    # Foreign key to manager (User table)
-    manager_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    # List of assigned users (via project_user join table)
- 
-    assigned_users = db.relationship('ProjectUser', backref='project', lazy=True)
-"""
+# Section to insert dummy data
 if __name__ == "__main__":
-    
+    # Import the function to create the Flask app
+    from app import create_app  
+    # Import related models
+    from app.models import User, ProjectUser  
+
     app = create_app()
-    app.app_context().push()
+    # Activate Flask application context# Activate Flask application context
 
-    # Pick first 3 project managers to assign
-    managers = User.query.join(User.role).filter_by(name="Project Manager").limit(3).all()
+    manager_user = User.query.filter_by(email="pm1@example.com").first()
+    employee1 = User.query.filter_by(email="emp1@example.com").first()
+    employee2 = User.query.filter_by(email="qa1@example.com").first()
 
-    dummy_projects = [
-        "Inventory System",
-        "HR Portal",
-        "E-commerce Site",
-        "Mobile App Tracker",
-        "Finance Dashboard",
-        "Task Manager",
-        "CRM Tool",
-        "Learning Platform",
-        "Visitor Log",
-        "Freelance Hub"
-    ]
+    # Proceed only if all required users are found
+    if manager_user and employee1 and employee2:
 
-    for i, proj_name in enumerate(dummy_projects):
-        manager = managers[i % len(managers)]
-        existing = Project.query.filter_by(name=proj_name).first()
-        if not existing:
-            p = Project(name=proj_name, manager_id=manager.id)
-            db.session.add(p)
+        # Check if the project already exists to avoid duplicate insertion
+        existing_project = Project.query.filter_by(name="AI System Upgrade").first()
+        if not existing_project:
+            # Create a new project and assign the manager
+            project = Project(
+                name="AI System Upgrade",
+                manager_id=manager_user.id
+            )
+            db.session.add(project)
+            # Saving the new project to the database
+            db.session.commit()  # Saving the new project to the database
 
-    db.session.commit()
-    print("Dummy projects inserted.")"""
+            # Assigning users to the project via the ProjectUser association table
+            assignment1 = ProjectUser(project_id=project.id, user_id=employee1.id)
+            assignment2 = ProjectUser(project_id=project.id, user_id=employee2.id)
+
+            db.session.add_all([assignment1, assignment2])
+            db.session.commit()  
+            print("Dummy project and user assignments inserted successfully.")
+        else:
+            print("Project already exists.")
+    else:
+        print("Required users not found. Please insert dummy users first.")

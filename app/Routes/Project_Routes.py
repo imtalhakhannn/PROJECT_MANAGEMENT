@@ -77,3 +77,29 @@ def assign_user(current_user):
     db.session.commit()
 
     return jsonify({"msg": "User assigned to project successfully"})
+
+
+# Get all project IDs assigned to the current user
+@project_bp.route('/project', methods=['GET'])
+@jwt_required()
+def get_user_projects(current_user):
+    try:
+      
+        assigned_projects = (
+            db.session.query(Project)
+            .join(ProjectUser)
+            .filter(ProjectUser.user_id == current_user.id)
+            .all())
+        
+
+        # Format project data to dicts 
+        project_lists=[]
+        for project in range(assigned_projects):
+            project_dictionary=project.to_dict()
+            project_lists.append(project_dictionary)
+        
+
+        return jsonify(project_lists), 200
+
+    except Exception as e:
+        return jsonify({"msg": f"Error fetching projects: {str(e)}"}), 500

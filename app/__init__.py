@@ -34,5 +34,13 @@ def create_app():
     from app.Routes.Project_Routes import project_bp
     app.register_blueprint(project_bp, url_prefix='/api/project')
 
+    from app.Routes.User_Routes import user_bp
+    app.register_blueprint(user_bp, url_prefix='/api/user')
+    with app.app_context():
+       
+       print("Registered Routes:")
+       for rule in app.url_map.iter_rules():
+           print(rule)
+
     print("auth_bp loaded")
     return app
