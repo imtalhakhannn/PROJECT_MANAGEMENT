@@ -41,29 +41,49 @@ def register():
     return jsonify({"msg": f"{role_name} registered successfully!"})
 
 # Handling login and JWT token generation
+# @auth_bp.route('/login', methods=['POST'])
+# def login():
+#     # Getting JSON data from the request
+#     data = request.get_json()
+#     email = data.get('email')
+#     password = data.get('password')
+
+#     # Fetching the user from the database by email
+#     user = User.query.filter_by(email=email).first()
+#     # Verifying credentials (checking if user exists and password matches)
+#     if not user or not check_password_hash(user.password, password):
+#         return jsonify({"msg": "Invalid credentials"}), 401
+
+#     # Creating an access token using user's ID
+#     access_token = create_access_token(identity=user.id)
+
+
+#     # Returning the access token, user's role, and email
+#     return jsonify({
+#         "access_token": access_token,
+#         "role": user.role.name,
+#         "email": user.email
+#     })
+
+# # Printing confirmation that the blueprint is loaded
+# print("auth_bp loaded")
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    # Getting JSON data from the request
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
 
-    # Fetching the user from the database by email
     user = User.query.filter_by(email=email).first()
-    # Verifying credentials (checking if user exists and password matches)
     if not user or not check_password_hash(user.password, password):
         return jsonify({"msg": "Invalid credentials"}), 401
 
-    # Creating an access token using user's ID
-    access_token = create_access_token(identity=user.id)
+    # Convert user.id to string for JWT identity
+    access_token = create_access_token(identity=str(user.id))
 
-
-    # Returning the access token, user's role, and email
     return jsonify({
         "access_token": access_token,
         "role": user.role.name,
         "email": user.email
-    })
+    }), 200
 
-# Printing confirmation that the blueprint is loaded
 print("auth_bp loaded")
