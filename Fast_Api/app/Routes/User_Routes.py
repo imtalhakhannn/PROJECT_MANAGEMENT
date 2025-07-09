@@ -4,11 +4,12 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.models.User import User
 from app.models.Role import Role
+from app.models.Task import Task
 from app.Database import get_db
 from app.authentication.utils import get_current_user_with_roles
 from werkzeug.security import generate_password_hash
-from app.Schemas.User_Schema import UserCreateSchema,RoleSchema
-
+from app.Schemas.User_Schema import UserCreateSchema,RoleSchema,UserTaskInput
+from app.models.User_Tasks import UserTask
 
 router = APIRouter()
 #Creating role for a specific user
@@ -59,7 +60,12 @@ def create_user(
 
     hashed_password = bcrypt.hashpw(data.password.encode(), bcrypt.gensalt()).decode()
     new_user = User(email=data.email, password=hashed_password, role=role_obj)
-
+    new_user = User(
+        email=data.email,
+        password=hashed_password,
+        role=role_obj,
+        created_by=current_user.id
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -72,5 +78,39 @@ def get_all_users(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_with_roles(["CEO", "Project Manager", "HR Manager"]))
 ):
-    users = db.query(User).all()
+    # CEO can see all users
+    if current_user.role.name == "CEO":
+        return db.query(User).all()
+    
+    # Others see only the users they created
+    users = db.query(User).filter(User.created_by == current_user.id).all()
     return users
+
+#Updating for users and tasks
+@router.post("/add")
+def add_user_task(data: UserTaskInput, db: Session = Depends(get_db)):
+    try:
+        # Getting task name using task_id
+        task = db.query(Task).filter(Task.id == data.task_id).first()
+        if not task:
+            raise HTTPException(status_code=404, detail="Task not found")
+        
+        # Inserting into user_tasks
+        new_entry = UserTask(user_id=data.user_id, task_id=data.task_id,task_name=task.name)
+        db.add(new_entry)
+        db.commit()
+        db.refresh(new_entry)
+
+        return {
+            "message": "Task assigned to user successfully",
+            "user_task": {
+                "id": new_entry.id,
+                "user_id": new_entry.user_id,
+                "task_id": new_entry.task_id,
+                "task_name": task.name  
+            }
+        }
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))

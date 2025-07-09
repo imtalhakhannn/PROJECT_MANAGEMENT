@@ -7,7 +7,7 @@ from app.models.Task import Task
 # Importing Pydantic schemas for report input/output
 from app.Schemas.Report_Schema import ReportCreate, ReportOut
 
-# Creating a router for all report-related endpoints
+# Creating a router for all report related endpoints
 router = APIRouter()
 
 # Creating a new report and linking it with user and task

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel,Field,EmailStr
 from typing import Optional
 
 # Schema for creating a role
@@ -22,5 +22,10 @@ class LoginSchema(BaseModel):
     email: EmailStr
     password: str
 
-    class Config:
-        orm_mode = True
+#Schema for user and task
+class UserTaskInput(BaseModel):
+    user_id: int
+    task_id: int
+    task_name: str
+class Config:
+    orm_mode = True

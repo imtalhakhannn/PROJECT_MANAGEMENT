@@ -10,10 +10,11 @@ class TaskBase(BaseModel):
 
 #For creating new task
 class TaskCreate(TaskBase):
-    name: str
-    start_date: date
-    end_date: date
-    project_id: int
+    pass
+#Updating Tasks Table by adding Quantity and Rate columns
+class TaskUpdate(TaskBase):
+    Rate: str
+    Quantity: int
 
 # For returning task from API
 class TaskOut(TaskBase):

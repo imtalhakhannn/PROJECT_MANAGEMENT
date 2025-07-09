@@ -1,6 +1,7 @@
 # Importing the Base and session maker from your FastAPI database config
 from app.Database import Base, SessionLocal
 from sqlalchemy import Column, Integer, String
+
 # Defining Role Table
 class Role(Base):
     __tablename__ = "role"

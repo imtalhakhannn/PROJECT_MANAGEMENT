@@ -9,9 +9,11 @@ from app.Database import get_db
 from fastapi_jwt_auth import AuthJWT
 import bcrypt
 from app.authentication.utils import create_access_token
-
+from app.Database import Base, SessionLocal
 router = APIRouter()
 
+
+#Creating Signup Api
 @router.post("/signup")
 async def signup(data: UserCreateSchema, db: Session = Depends(get_db)):
     # Checking if user already exists
@@ -36,6 +38,7 @@ async def signup(data: UserCreateSchema, db: Session = Depends(get_db)):
 
     return {"message": "User created successfully", "user_id": new_user.id, "role": role.name}
 
+#Creating login Api
 @router.post("/login")
 def login(data: LoginSchema, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     # Finding user in the database by email
@@ -56,6 +59,7 @@ def login(data: LoginSchema, db: Session = Depends(get_db), Authorize: AuthJWT =
         "role": user.role.name
     }
 
+#CReating Role Api
 @router.post("/create-role")
 async def create_role(request: Request, db: Session = Depends(get_db)):
     data = await request.json()

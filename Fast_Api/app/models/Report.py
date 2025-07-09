@@ -4,7 +4,6 @@ from sqlalchemy import Column, Integer, ForeignKey, Text, DateTime
 from sqlalchemy.orm import relationship
 from app.models import Task, User
 from app.Database import Base, SessionLocal
-
 from app.models import User
 
 

@@ -3,7 +3,7 @@ from sqlalchemy import Date, Column, Integer, String, ForeignKey
 from app.Database import Base, SessionLocal  # Base class and DB session
 from sqlalchemy.orm import relationship
 
-# Defining the Task Table to store project tasks
+# Defining the Task Table 
 class Task(Base):
     __tablename__ = "tasks"
 
@@ -16,6 +16,10 @@ class Task(Base):
     # Defining task start and end dates
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=False)
+    #Defing Rate Column
+    Rate=Column(String(500),nullable=False)
+    #Defining Quantity Column
+    Quantity=Column(Integer,nullable=False)
 
     # Linking task to a project using foreign key
     project_id = Column(Integer, ForeignKey("project.id"))

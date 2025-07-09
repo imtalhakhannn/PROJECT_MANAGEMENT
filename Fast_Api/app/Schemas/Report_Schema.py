@@ -18,6 +18,6 @@ class ReportOut(BaseModel):
     user_id: int             
     task_id: int               
 
-    # Enables ORM mode to support SQLAlchemy models directly
+# Enables ORM mode to support SQLAlchemy models directly
     class Config:
         orm_mode = True

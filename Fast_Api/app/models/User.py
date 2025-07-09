@@ -4,56 +4,71 @@ from sqlalchemy.orm import relationship
 from app.Database import Base, SessionLocal
 from app.models.Role import Role
 
-# Defining the User Table 
+# Defining the User table 
 class User(Base):
     __tablename__ = "user"
 
-    # Creating unique identifier for each user
+    # Defining primary key for the user
     id = Column(Integer, primary_key=True, index=True)
-
-    # Storing user's email 
+    
+    # Storing user's email with unique constraint
     email = Column(String(120), unique=True, nullable=False)
-
+    
     # Storing hashed password
     password = Column(String(600), nullable=False)
-
-    # Linking user to a role using foreign key
+    
+    # Linking user to their role via foreign key
     role_id = Column(Integer, ForeignKey('role.id'), nullable=False)
 
-    # Establishing relationship with Role 
+    # Establishing relationship with Role model
     role = relationship('Role', backref='users')
-
-    # Establishing relationship with projects user manages
+    
+    # Defining projects this user manages
     managed_projects = relationship("Project", back_populates="project_manager")
-
-
-    # Establishing relationship with projects assigned to user
+    
+    # Defining projects assigned to this user
     assigned_projects = relationship("ProjectUser", back_populates="user")
+    
+    # Defining reports submitted by this user
     reports = relationship("Report", back_populates="user")
+    
+    # Tracking the user who created this user (if applicable)
+    created_by = Column(Integer, ForeignKey('user.id'), nullable=True)
+    
+    # Establishing relationship to the creator (self-referencing)
+    creator = relationship("User", remote_side='User.id')
 
+    # Linking user to their assigned tasks
+    user_tasks = relationship("UserTask", back_populates="user")
 
 # Inserting dummy users when file is run directly
 if __name__ == "__main__":
     # Creating a new DB session
     db = SessionLocal()
-
+    ceo = db.query(User).filter_by(email="ceo1@example.com").first()
+    pm=db.query(User).filter_by(email="pm1@example.com").first()
+    hr=db.query(User).filter_by(email="hr@example.com").first()
     # Defining dummy user data with email and role name
     dummy_users = [
-        {"email": "ceo1@example.com", "role": "CEO"},
-        {"email": "pm1@example.com", "role": "Project Manager"},
-        {"email": "team_134@example.com", "role": "Team Lead"},
-        {"email": "emp1@example.com", "role": "Employee"},
-        {"email": "emp2@example.com", "role": "Employee"},
-        {"email": "emp3@example.com", "role": "Employee"},
-        {"email": "emp4@example.com", "role": "Employee"},
-        {"email": "emp5@example.com", "role": "Employee"},
-        {"email": "emp6@example.com", "role": "Employee"},
-        {"email": "emp7@example.com", "role": "Employee"},
-        {"email": "emp8@example.com", "role": "Employee"},
-        {"email": "emp9@example.com", "role": "Employee"},
-        {"email": "hr@example.com", "role": "HR Manager"},
-        {"email": "Qa_134@example.com", "role": "QA Tester"},
-        {"email": "Dev_349@example.com", "role": "Developer"},
+        {"email": "ceo1@example.com", "role": "CEO","created_by": ceo.id},
+        {"email": "pm1@example.com", "role": "Project Manager","created_by": ceo.id},
+        {"email": "team_134@example.com", "role": "Team Lead","created_by": ceo.id},
+        {"email": "emp1@example.com", "role": "Employee","created_by": ceo.id},
+        {"email": "emp2@example.com", "role": "Employee","created_by": ceo.id},
+        {"email": "emp3@example.com", "role": "Employee","created_by": ceo.id},
+        {"email": "emp4@example.com", "role": "Employee","created_by": ceo.id},
+        {"email": "emp5@example.com", "role": "Employee","created_by": pm.id},
+        {"email": "emp6@example.com", "role": "Employee","created_by": pm.id},
+        {"email": "emp7@example.com", "role": "Employee","created_by": pm.id},
+        {"email": "emp8@example.com", "role": "Employee","created_by": pm.id},
+        {"email": "emp9@example.com", "role": "Employee","created_by": hr.id},
+        {"email": "emp10@example.com", "role": "Employee","created_by": hr.id},
+        {"email": "emp11@example.com", "role": "Employee","created_by": hr.id},
+        {"email": "emp12@example.com", "role": "Employee","created_by": hr.id},
+        {"email": "emp13@example.com", "role": "Employee","created_by": hr.id},
+        {"email": "hr@example.com", "role": "HR Manager","created_by": ceo.id},
+        {"email": "Qa_134@example.com", "role": "QA Tester","created_by": ceo.id},
+        {"email": "Dev_349@example.com", "role": "Developer","created_by": ceo.id},
     ]
 
     # Iterating through dummy users
@@ -69,7 +84,8 @@ if __name__ == "__main__":
             user = User(
                 email=u["email"],
                 password=generate_password_hash("password123"),
-                role_id=role.id
+                role_id=role.id,
+                created_by=u.get("created_by")
             )
             db.add(user)
 
