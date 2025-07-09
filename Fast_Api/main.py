@@ -3,6 +3,7 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel
 
+
 # JWT Secret Key Configuration
 class Settings(BaseModel):
     authjwt_secret_key: str = "super-secret"  
@@ -11,8 +12,10 @@ class Settings(BaseModel):
 def get_config():
     return Settings()
 
+
 # Initializing FastAPI App
 app = FastAPI(title="Project Management API")
+
 
 # Custom OpenAPI for Swagger Authorization
 def custom_openapi():
@@ -44,10 +47,10 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
+
 # Including API Routers
 from app.Routes import Task_Routes, Project_Routes, User_Routes, Report_Routes
 from app.Routes.Authentication_Routes import router as auth_router  
-
 app.include_router(auth_router)
 app.include_router(Task_Routes.router)
 app.include_router(Project_Routes.router)

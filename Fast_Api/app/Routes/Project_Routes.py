@@ -76,7 +76,8 @@ def get_pm_created_projects(
     try:
         Authorize.jwt_required()
 
-        # Getting user ID from JWT
+
+# Getting user ID from JWT
         user_id = Authorize.get_jwt_subject()
 
         current_user = db.query(User).filter(User.id == user_id).first()
@@ -85,7 +86,7 @@ def get_pm_created_projects(
 
         created_projects = db.query(Project).filter(Project.manager_id == current_user.id).all()
 
-        # Converting projects to dict safely 
+# Converting projects to dict safely 
         project_list = [project.to_dict() if hasattr(project, "to_dict") else {
             "id": project.id,
             "name": project.name,

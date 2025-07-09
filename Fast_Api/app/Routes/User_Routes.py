@@ -14,6 +14,8 @@ from app.models.User_Tasks import UserTask
 
 # Creating a router for all users related endpoints
 router = APIRouter()
+
+
 #Creating role for a specific user
 @router.post("/create-role")
 async def create_role(data: RoleSchema, db: Session = Depends(get_db)):
@@ -29,11 +31,14 @@ async def create_role(data: RoleSchema, db: Session = Depends(get_db)):
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models import User
-
 from app.authentication.utils import get_current_user
 import bcrypt
 
+
+# Creating a router for all tasks related endpoints
 router = APIRouter()
+
+
 #Creating Users according to the position
 @router.post("/create-user")
 def create_user(
@@ -41,11 +46,14 @@ def create_user(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    #If user is CEO then it can hire project manager,hr manager and employee
+    
+#If user is CEO then it can hire project manager,hr manager and employee
     if current_user.role.name == "CEO":
         if data.role not in ["HR Manager", "Project Manager","Employee"]:
             raise HTTPException(status_code=400, detail="CEO can only create HR,Project Manager and Employees.")
-    #if user is project manager and HR Manager they can both hire employees    
+
+
+#if user is project manager and HR Manager they can both hire employees    
     elif current_user.role.name in ["HR Manager", "Project Manager"]:
         if data.role != "Employee":
             raise HTTPException(status_code=400, detail="You can only create Employee accounts.")
@@ -74,17 +82,21 @@ def create_user(
 
     return {"message": f"{data.role} created successfully", "email": new_user.email}
 
+
 #Getting all users created by CEO,project manager and HR Manager
 @router.get("/users")
 def get_all_users(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_with_roles(["CEO", "Project Manager", "HR Manager"]))
 ):
-    # CEO can see all users
+    
+    
+# CEO can see all users
     if current_user.role.name == "CEO":
         return db.query(User).all()
     
-    # Others see only the users they created
+    
+# Others see only the users they created
     users = db.query(User).filter(User.created_by == current_user.id).all()
     return users
 
@@ -92,12 +104,15 @@ def get_all_users(
 @router.post("/add")
 def add_user_task(data: UserTaskInput, db: Session = Depends(get_db)):
     try:
-        # Getting task name using task_id
+
+
+# Getting task name using task_id
         task = db.query(Task).filter(Task.id == data.task_id).first()
         if not task:
             raise HTTPException(status_code=404, detail="Task not found")
         
-        # Inserting into user_tasks
+
+# Inserting into user_tasks
         new_entry = UserTask(user_id=data.user_id, task_id=data.task_id,task_name=task.name)
         db.add(new_entry)
         db.commit()
