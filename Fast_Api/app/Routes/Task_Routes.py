@@ -4,6 +4,8 @@ from app.Database import SessionLocal
 from app.models.Task import Task as TaskModel
 from app.Schemas.Task_Schema import TaskCreate, TaskOut,TaskUpdate
 from typing import List
+
+# Creating a router for all tasks related endpoints
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 # Dependency to get DB session

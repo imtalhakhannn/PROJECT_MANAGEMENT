@@ -12,6 +12,7 @@ from app.authentication.utils import get_current_user_with_roles
 from app.Schemas.Projects_Schema import CreateProjectSchema,AssignProjectSchema
 
 
+# Creating a router for all projects related endpoints
 router = APIRouter(prefix="/project", tags=["Projects"])
 
 

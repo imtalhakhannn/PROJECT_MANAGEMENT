@@ -11,6 +11,8 @@ from werkzeug.security import generate_password_hash
 from app.Schemas.User_Schema import UserCreateSchema,RoleSchema,UserTaskInput
 from app.models.User_Tasks import UserTask
 
+
+# Creating a router for all users related endpoints
 router = APIRouter()
 #Creating role for a specific user
 @router.post("/create-role")

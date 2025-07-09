@@ -10,6 +10,8 @@ from fastapi_jwt_auth import AuthJWT
 import bcrypt
 from app.authentication.utils import create_access_token
 from app.Database import Base, SessionLocal
+
+# Creating a router for all authentication related endpoints
 router = APIRouter()
 
 
