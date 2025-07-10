@@ -74,6 +74,7 @@ def create_user(
         email=data.email,
         password=hashed_password,
         role=role_obj,
+        user_name=data.user_name,
         created_by=current_user.id
     )
     db.add(new_user)

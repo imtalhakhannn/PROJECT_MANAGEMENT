@@ -10,6 +10,7 @@ class UserCreateSchema(BaseModel):
     email: EmailStr
     password: str
     role: str
+    user_name: str 
 
 # Schema used during user signup
 class SignUpSchema(BaseModel):

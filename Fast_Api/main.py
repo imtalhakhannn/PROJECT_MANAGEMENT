@@ -49,16 +49,15 @@ app.openapi = custom_openapi
 
 
 # Including API Routers
-from app.Routes import Task_Routes, Project_Routes, User_Routes, Report_Routes
+from app.Routes import Task_Routes, Project_Routes, User_Routes, Report_Routes,Visualize_Routes
 from app.Routes.Authentication_Routes import router as auth_router  
 app.include_router(auth_router)
 app.include_router(Task_Routes.router)
 app.include_router(Project_Routes.router)
 app.include_router(User_Routes.router)
 app.include_router(Report_Routes.router)
-
+app.include_router(Visualize_Routes.router)
 from app.Database import Base, engine  
-
 Base.metadata.create_all(bind=engine)
 
 @app.get("/")

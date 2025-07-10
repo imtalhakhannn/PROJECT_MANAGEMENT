@@ -26,7 +26,7 @@ async def create_tasks(tasks: List[TaskCreate], db: Session = Depends(get_db)):
     for task in tasks:
         new_task = TaskModel(**task.dict())
         db.add(new_task)
-        db.flush()  
+        db.flush()
         created_tasks.append(new_task)
     db.commit()
     return created_tasks
@@ -60,19 +60,6 @@ def get_task(task_id: int, db: Session = Depends(get_db)):
     task = db.query(TaskModel).filter(TaskModel.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    return task
-
-
-#Updating Task
-@router.put("/{task_id}", response_model=TaskOut)
-def update_task(task_id: int, updated_task: TaskCreate, db: Session = Depends(get_db)):
-    task = db.query(TaskModel).filter(TaskModel.id == task_id).first()
-    if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
-    task.name = updated_task.name
-    task.description = updated_task.description
-    db.commit()
-    db.refresh(task)
     return task
 
 

@@ -7,6 +7,8 @@ class TaskBase(BaseModel):
     start_date: date
     end_date: date
     project_id: int
+    Rate:str
+    Quantity:int
 
 #For creating new task
 class TaskCreate(TaskBase):

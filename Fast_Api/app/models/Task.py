@@ -33,6 +33,9 @@ class Task(Base):
 # Linking task to a project using foreign key
     project_id = Column(Integer, ForeignKey("project.id"))
     project = relationship("Project", back_populates="tasks")
+
+
+#Linking Tasks to reports    
     reports = relationship("Report", back_populates="task")
 
 

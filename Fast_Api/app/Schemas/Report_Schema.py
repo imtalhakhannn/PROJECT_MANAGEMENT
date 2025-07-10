@@ -5,17 +5,38 @@ from pydantic import BaseModel
 from datetime import datetime
 # Schema for creating a report
 class ReportCreate(BaseModel):
-    content: str               
-    timestamp: datetime    
+    Report_id: int
+    Task_id:int
+    User_id:int
+    Task_name:str
+    Timestamp: datetime   
+    Project_name:str
+    Reported_by_name:str
+    Overall_Quantity:int
+    Reported_Quantity:int
+    Rate:str
+    Amount:float
+    Status:str
+    Pending_quantity:str 
     user_id: int              
     task_id: int             
 
 # Schema for returning a report 
 class ReportOut(BaseModel):
-    id: int                   
-    content: str              
-    timestamp:datetime    
-    user_id: int             
+    Report_id: int
+    Task_id:int
+    User_id:int
+    Task_name:str
+    Timestamp: datetime   
+    Project_name:str
+    Reported_by_name:str
+    Overall_Quantity:int
+    Reported_Quantity:int
+    Rate:str
+    Amount:float
+    Status:str
+    Pending_quantity:str 
+    user_id: int              
     task_id: int               
 
 # Enables ORM mode to support SQLAlchemy models directly

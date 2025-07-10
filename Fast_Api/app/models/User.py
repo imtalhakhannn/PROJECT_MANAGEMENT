@@ -26,6 +26,14 @@ class User(Base):
     role_id = Column(Integer, ForeignKey('role.id'), nullable=False)
 
 
+#Adding reports created by field to connect with the user
+    created_by=Column(String(255),nullable=False)
+
+
+# CReating user names field
+    user_name=Column(String(255),nullable=False)
+
+
 # Establishing relationship with Role model
     role = relationship('Role', backref='users')
     

@@ -1,6 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
-from sqlalchemy import Column, Integer, ForeignKey, Text, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, Text, DateTime,String,Float
 from sqlalchemy.orm import relationship
 from app.models import Task, User
 from app.Database import Base, SessionLocal
@@ -13,23 +13,55 @@ class Report(Base):
 
 
 # Defining primary key
-    id = Column(Integer, primary_key=True, index=True)
+    Report_id = Column(Integer, primary_key=True, index=True)
 
 
 # Linking report to the Task it belongs to
-    task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
+    Task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
+
+
+# Adding task name field
+    Task_name=Column(String(255),nullable=False)
+
+
+#Adding project name field
+    Project_name=Column(String(255),nullable=False)
+
+
+#Adding user reporting field
+    Reported_by_name=Column(String(255),nullable=False)
 
 
 # Linking report to the User who submitted it
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    User_id = Column(Integer, ForeignKey("user.id"), nullable=False)
 
 
-# Defining report content field
-    content = Column(Text, nullable=False)
+# Adding Rate field
+    Rate=Column(Float,nullable=False)
+
+
+#Adding amount field    
+    Amount=Column(Float,nullable=False)
+
+
+#Adding Status field
+    Status=Column(String(255),nullable=False)
+
+
+#Adding Pending_Quantity field
+    Pending_quantity=Column(String(255),nullable=False)        
 
 
 # Adding timestamp field
-    timestamp= Column(DateTime, default=datetime.utcnow)
+    Timestamp= Column(DateTime, default=datetime.utcnow)
+
+
+#Adding Overall Quantity field
+    Overall_quantity=Column(Integer,nullable=False)
+
+
+#Adding Reported Quantity field
+    Reported_quantity=Column(Integer,nullable=False)  
 
 
 # Creating relationship with Task model
